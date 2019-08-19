@@ -120,13 +120,3 @@ if __name__ == '__main__':
             main(i)
     else:
         main(int(page))
-
-        {
-            "db": "mongodb",
-            "host": "localhost",
-            "port": 27017,
-            "username": "",
-            "password": "",
-            "dbname": "rrys",
-            "table": "rrys"
-        }
