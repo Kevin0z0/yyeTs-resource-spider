@@ -35,7 +35,7 @@ def get_info(html):
 def get_score(num): # 获取评分
     try:
         doc = requests.post("http://www.zmz2019.com/resource/getScore",data={"rid":num},headers=headers).content.decode()
-        return json.loads(doc)['score']
+        return loads(doc)['score']
     except Exception as e:
         throw_error(e)
         get_score(num)
