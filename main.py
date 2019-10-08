@@ -8,8 +8,8 @@ from threading import Thread
 from pyquery import PyQuery as pq
 
 
-def throw_error(e):
-    print("出现{}错误，开始重新获取页面".format(e))
+def throw_error(e,num):
+    print("出现[{}]错误，开始重新获取第{}页中的内容".format(e,num))
     time.sleep(1)
 
 
@@ -37,8 +37,23 @@ def get_score(num): # 获取评分
         doc = requests.post("http://www.zmz2019.com/resource/getScore",data={"rid":num},headers=headers).content.decode()
         return loads(doc)['score']
     except Exception as e:
-        throw_error(e)
+        throw_error(e, num)
         get_score(num)
+
+
+def format_date(date):
+    arr = date.split(" ")[0].split("-")
+    num=0
+    for i in arr:
+        if i.isdigit():
+            if num > 0:
+                while len(i) < 2:
+                    i = "0" + i
+            arr[num] = i
+            num += 1
+    date = ''.join(arr)
+    date += (8 - len(date)) * "0"
+    return int(date)
 
 
 def analyze(u):
@@ -65,23 +80,27 @@ def analyze(u):
             main_info['url'] = url
         # 获取影片封面
         if "imgurl" in result_info:
-            main_info['imgurl'] = html('.imglink a').attr('href')
+            main_info['imgurl'] = html('.imglink a img').attr('src')
         # 获取本站排名
         if "rank" in result_info:
-            main_info["rank"] = re.search("本站排名:(\d*)", html(".score-con li:first-child .f4").text()).group(1)
+            main_info["rank"] = int(re.search("本站排名:(\d*)", html(".score-con li:first-child .f4").text()).group(1))
         # 获取简介
         if "introduction" in result_info:
             main_info["introduction"] = html(".resource-desc .con:last-child").text()
         result = {}
         # 写入标题和分级
         result["title"] = title[1]
-        result["level"] = level
+        result["level"] = level.upper()
         # 遍历main_info,只写入有效数据
         for key, value in result_info.items():
             try:
                 result[key] = main_info[key]
             except:
                 result[key] = '暂无'
+
+        # 修改日期格式
+        if result["premiereDate"]:
+            result["premiereDate"] = format_date(result["premiereDate"])
 
         print(result['title'])
         # 写入文件
@@ -90,7 +109,7 @@ def analyze(u):
         else:
             mycol.insert_one(result)
     except Exception as e:
-        throw_error(e)
+        throw_error(e,u)
         analyze(u)
 
 
@@ -98,16 +117,21 @@ def main(num):
     try:
         url = baseurl + "/resourcelist/?page={}".format(num)
         doc = pq(requests.get(url, headers=headers).content.decode())
-        urls = doc(".fl-info a").items() #遍历a标签
+        arr = [i.attr("href") for i in doc(".fl-info a").items()] #遍历a标签
+        if len(arr) == 0:
+            time.sleep(10)
+            print("[*] 再次获取第{}页".format(num))
+            main(num)
+            return
         if info['threads']:
-            for i in urls:
-                Thread(target=analyze,args=(i.attr("href"),)).start()
+            for i in arr:
+                Thread(target=analyze,args=(i,)).start()
         else:
-            for i in urls:
-                analyze(i.attr("href"))
+            for i in arr:
+                analyze(i)
         time.sleep(1)
     except Exception as e:
-        throw_error(e)
+        throw_error(e,num)
         main(num)
 
 
