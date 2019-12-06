@@ -1,4 +1,4 @@
-# yyeTs-resource-crawler
+# yyeTs-resource-spider
 
 此程序可爬取大部分人人影视数据，具体bug还没测试
 
