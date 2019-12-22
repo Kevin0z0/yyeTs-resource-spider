@@ -59,10 +59,10 @@ def format_date(date):
 def analyze(u):
     try:
         url = baseurl + u
-        html = pq(requests.get(url, headers=headers).content.decode())
+        doc = requests.get(url, headers=headers).content.decode()
+        html = pq(doc)
         # 获取标题和剧种
-        t = html(".resource-tit h2").text()
-        title = re.search("【(.*)】《(.*)》", t).groups()
+        title = re.search("title:'【(.*?)-.*?】《(.*?)》",doc).groups()
         # 获取影视分级
         items = html('.level-item img').attr('src')
         level = get_level(items, info["level"])
@@ -80,10 +80,11 @@ def analyze(u):
             main_info['url'] = url
         # 获取影片封面
         if "imgurl" in result_info:
-            main_info['imgurl'] = html('.imglink a img').attr('src')
+            main_info['imgurl'] = re.search("pic:'(.*?)'",doc).group(1)
+            print(main_info['imgurl'])
         # 获取本站排名
         if "rank" in result_info:
-            main_info["rank"] = int(re.search("本站排名:(\d*)", html(".score-con li:first-child .f4").text()).group(1))
+            main_info["rank"] = int(re.search("本站排名:.*?(\d*$)", html(".score-con p.f4").text()).group(1))
         # 获取简介
         if "introduction" in result_info:
             main_info["introduction"] = html(".resource-desc .con:last-child").text()
@@ -117,9 +118,10 @@ def main(num):
     try:
         url = baseurl + "/resourcelist/?page={}".format(num)
         doc = pq(requests.get(url, headers=headers).content.decode())
-        arr = [i.attr("href") for i in doc(".fl-info a").items()] #遍历a标签
+        urls = doc(".fl-info a").items() #遍历a标签
+        arr = [i.attr("href") for i in urls]
         if len(arr) == 0:
-            time.sleep(10)
+            time.sleep(1)
             print("[*] 再次获取第{}页".format(num))
             main(num)
             return
