@@ -81,7 +81,6 @@ def analyze(u):
         # 获取影片封面
         if "imgurl" in result_info:
             main_info['imgurl'] = re.search("pic:'(.*?)'",doc).group(1)
-            print(main_info['imgurl'])
         # 获取本站排名
         if "rank" in result_info:
             main_info["rank"] = int(re.search("本站排名:.*?(\d*$)", html(".score-con p.f4").text()).group(1))
