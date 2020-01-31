@@ -3,7 +3,7 @@ from json import load
 
 # 全局变量和预处理
 headers = {"User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36"}
-baseurl = "http://www.zmz2019.com"
+baseurl = "http://www.rrys2019.com"
 f = open('settings.json', 'r')
 info = load(f)
 zh_info = {
