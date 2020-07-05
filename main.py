@@ -8,8 +8,9 @@ from threading import Thread
 from pyquery import PyQuery as pq
 
 
+
 def throw_error(e,num):
-    print("出现[{}]错误，开始重新获取第{}页中的内容".format(e,num))
+    print("出现[{}]错误，开始重新获取{}中的内容".format(e,num))
     time.sleep(1)
 
 
@@ -34,7 +35,7 @@ def get_info(html):
 
 def get_score(num): # 获取评分
     try:
-        doc = requests.post(baseurl + "/resource/getScore",data={"rid":num},headers=headers).content.decode()
+        doc = requests.post(baseurl + "/resource/getScore",data={"rid":num},headers=headers,timeout=5).content.decode()
         return loads(doc)['score']
     except Exception as e:
         throw_error(e, num)
@@ -59,7 +60,7 @@ def format_date(date):
 def analyze(u):
     try:
         url = baseurl + u
-        doc = requests.get(url, headers=headers).content.decode()
+        doc = requests.get(url, headers=headers,timeout=5).content.decode()
         html = pq(doc)
         # 获取标题和剧种
         title = re.search("title:'【(.*?)-.*?】《(.*?)》",doc).groups()
@@ -116,9 +117,8 @@ def analyze(u):
 def main(num):
     try:
         url = baseurl + "/resourcelist/?page={}".format(num)
-        doc = pq(requests.get(url, headers=headers).content.decode())
-        urls = doc(".fl-info a").items() #遍历a标签
-        arr = [i.attr("href") for i in urls]
+        doc = pq(requests.get(url, headers=headers, timeout=5).content.decode())
+        arr = [i.attr("href") for i in doc(".fl-info a").items()]  #遍历a标签
         if len(arr) == 0:
             time.sleep(1)
             print("[*] 再次获取第{}页".format(num))
