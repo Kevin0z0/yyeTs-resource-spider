@@ -13,8 +13,7 @@ class DB:
             sys.exit(0)
 
     def __detect_tables(self, name):
-        query = "show tables;"
-        self.cursor.execute(query)
+        self.__execute("show tables;")
         tables = self.cursor.fetchall()
         for i in tables:
             if name == i[0]:
@@ -46,7 +45,7 @@ class DB:
         CREATE TABLE {self.__tableName}(
             level char(3),
             region varchar(10),
-            title varchar(50) not null,
+            title varchar(70) not null,
             dramaType varchar(20),
             type varchar(50),
             company varchar(255),
@@ -66,7 +65,7 @@ class DB:
             directors varchar(1000)
         )
         """
-        self.cursor.execute(query)
+        self.__execute(query)
 
     def insert(self, val):
         args = []
@@ -77,7 +76,6 @@ class DB:
             args.append(i)
             result.append(str(v) if isinstance(v, int) else "'{}'".format(str(v).replace("'","''").replace("\\","\\\\")))
         query = f"INSERT INTO {self.__tableName} ({','.join(args)}) VALUES ({','.join(result)})"
-        # print(query)
         self.__execute(query)
 
 
