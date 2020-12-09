@@ -71,6 +71,7 @@ def analyze(u):
         if level == False: return
         # 获取主要信息
         main_info = get_info(html)
+        main_info["imdb"] = main_info["imdb"].split(' ')[0]
         # 获取剧种
         if "dramaType" in result_info:
             main_info["dramaType"] = title[0]
@@ -108,7 +109,7 @@ def analyze(u):
         if export == 'csv':
             wirtecsv([i for i in result.values()])
         else:
-            mycol.insert_one(result)
+            db.insert(result)
     except Exception as e:
         throw_error(e,u)
         analyze(u)
@@ -130,6 +131,7 @@ def main(num):
         else:
             for i in arr:
                 analyze(i)
+                break
         time.sleep(1)
     except Exception as e:
         throw_error(e,num)

@@ -1,4 +1,3 @@
-import sys
 from json import load
 
 # 全局变量和预处理
@@ -51,12 +50,9 @@ if export == 'csv':
 # 引入pymongo
 elif isinstance(export, dict):
     if export['db'] == 'mongodb':
-        import pymongo
-        try:
-            account = "{}:{}@".format(export['username'], export['password']) if len(export['username']) > 0 else ""
-            myclient = pymongo.MongoClient("mongodb://{}{}:{}".format(account, export["host"], export["port"]))
-            mydb = myclient[export["dbname"]]
-            mycol = mydb[export["table"]]
-        except Exception as e:
-            print(e)
-            sys.exit(0)
+        from mongo import DB
+    elif export["db"] == "mysql":
+        from mysql import DB
+
+    db = DB(export)
+
