@@ -16,15 +16,26 @@ pip install -r requirements.txt
 
 ​	pageNum：可选择"1-737"多页面 或者 "2" 单页面爬取
 
-​	level：可选择只爬取 "e" ，也可以选择"abe"，"abc"等多种组合爬取，如果选择"all"，则会爬取一些暂无分级的影视信息
+​	level：可选择只爬取 "e" ，也可以选择"abe"，"abc"等多种组合爬取，如果选择"all"，则会爬取所有影视信息， 不想爬取没有分级的用"abcde"即可
 
-​	export：默认为导出csv格式，当前仅支持mongodb，如有需要，自行修改下列代码替换"csv"
+​	export：默认为导出csv格式，当前仅支持mysql和mongodb，如有需要，自行修改下列代码替换"csv"
 
 ```json
 {
     "db": "mongodb",
     "host": "localhost",
     "port": 27017,
+    "username": "",
+    "password": "",
+    "dbname": "rrys",
+    "table": "rrys"
+}
+```
+```json
+{
+    "db": "mysql",
+    "host": "localhost",
+    "port": 3306, //仅支持此端口
     "username": "",
     "password": "",
     "dbname": "rrys",
