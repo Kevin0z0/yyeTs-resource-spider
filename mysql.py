@@ -1,5 +1,6 @@
 import pymysql
 import sys
+from time import sleep
 class DB:
     def __init__(self, data):
         try:
@@ -25,30 +26,40 @@ class DB:
             self.createTable()
             print("已创建数据表")
 
+    def __execute(self,query):
+        try:
+            self.db.ping(reconnect=True)
+            self.cursor.execute(query)
+            self.db.commit()
+        except Exception as e:
+            if "PRIMARY" in str(e):
+                return
+            sleep(2)
+            self.__execute(query)
+
     def createTable(self):
         query = f"""
         CREATE TABLE {self.__tableName}(
-            id int primary key auto_increment,
-            level char(1),
+            level char(3),
             region varchar(10),
             title varchar(50) not null,
             dramaType varchar(10),
             type varchar(30),
-            company varchar(30),
+            company varchar(40),
             imgurl varchar(150),
             rank int,
-            url varchar(100) not null ,
-            score float,
-            introduction text(10000),
+            url varchar(100) not null primary key,
+            score varchar(4),
+            introduction text,
             translator varchar(100),
-            actors varchar(255),
+            actors varchar(1000),
             formerName varchar(100),
             alias varchar(100),
-            screenwriter varchar(255),
+            screenwriter varchar(500),
             imdb varchar(100),
             premiereDate int,
             language varchar(20),
-            directors varchar(100)
+            directors varchar(300)
         )
         """
         self.cursor.execute(query)
@@ -58,13 +69,13 @@ class DB:
         result = []
         for i in val:
             v = val[i]
+            if not v: continue
             args.append(i)
-            result.append(str(v) if isinstance(v, int) else f"'{v}'")
-        query = f"INSERT INTO rrys ({','.join(args)}) VALUES ({','.join(result)})"
-        self.cursor.execute(query)
+            result.append(str(v) if isinstance(v, int) else "'{}'".format(str(v).replace("'","''").replace("\\","\\\\")))
+        query = f"INSERT INTO {self.__tableName} ({','.join(args)}) VALUES ({','.join(result)})"
+        # print(query)
+        self.__execute(query)
+
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.db.close()
-
-if __name__ == '__main__':
-    db = DB()

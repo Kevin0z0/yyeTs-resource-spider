@@ -10,6 +10,8 @@ from pyquery import PyQuery as pq
 
 
 def throw_error(e,num):
+    if "Data" in str(e):
+        exit(0)
     print("出现[{}]错误，开始重新获取{}中的内容".format(e,num))
     time.sleep(1)
 
@@ -71,7 +73,7 @@ def analyze(u):
         if level == False: return
         # 获取主要信息
         main_info = get_info(html)
-        main_info["imdb"] = main_info["imdb"].split(' ')[0]
+        if "imdb" in main_info: main_info["imdb"] = main_info["imdb"].split(' ')[0]
         # 获取剧种
         if "dramaType" in result_info:
             main_info["dramaType"] = title[0]
