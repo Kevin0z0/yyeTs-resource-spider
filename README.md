@@ -35,7 +35,7 @@ pip install -r requirements.txt
 {
     "db": "mysql",
     "host": "localhost",
-    "port": 3306, //仅支持此端口
+    "port": 3306,
     "username": "",
     "password": "",
     "dbname": "rrys",
@@ -60,7 +60,7 @@ pip install -r requirements.txt
     
     地区=>region
     
-    语 言=>language
+    语言=>language
     
     首播=>premiereDate
     
@@ -74,7 +74,7 @@ pip install -r requirements.txt
     
     别名=>alias
     
-    編劇=>screenwriter
+    编剧=>screenwriter
     
     导演=>directors
     

@@ -4,7 +4,7 @@ from time import sleep
 class DB:
     def __init__(self, data):
         try:
-            self.db = pymysql.connect(data["host"], data["username"], data["password"], data["dbname"])
+            self.db = pymysql.connect(data["host"], data["username"], data["password"], data["dbname"], port=data["port"])
             self.cursor = self.db.cursor()
             self.__tableName = data["table"]
             self.__table_exists()
