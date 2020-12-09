@@ -54,7 +54,6 @@ class DB:
         self.cursor.execute(query)
 
     def insert(self, val):
-        # print(val)
         args = []
         result = []
         for i in val:

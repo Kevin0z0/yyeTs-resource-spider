@@ -131,7 +131,6 @@ def main(num):
         else:
             for i in arr:
                 analyze(i)
-                break
         time.sleep(1)
     except Exception as e:
         throw_error(e,num)
