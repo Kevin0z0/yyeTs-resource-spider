@@ -32,7 +32,11 @@ class DB:
             self.cursor.execute(query)
             self.db.commit()
         except Exception as e:
-            if "PRIMARY" in str(e):
+            e = str(e)
+            if "PRIMARY" in e:
+                return
+            if "Data" in e:
+                print(e, query)
                 return
             sleep(2)
             self.__execute(query)
@@ -43,9 +47,9 @@ class DB:
             level char(3),
             region varchar(10),
             title varchar(50) not null,
-            dramaType varchar(10),
-            type varchar(30),
-            company varchar(40),
+            dramaType varchar(20),
+            type varchar(50),
+            company varchar(255),
             imgurl varchar(150),
             rank int,
             url varchar(100) not null primary key,
@@ -53,13 +57,13 @@ class DB:
             introduction text,
             translator varchar(100),
             actors varchar(1000),
-            formerName varchar(100),
+            formerName varchar(255),
             alias varchar(100),
             screenwriter varchar(500),
             imdb varchar(100),
             premiereDate int,
-            language varchar(20),
-            directors varchar(300)
+            language varchar(50),
+            directors varchar(1000)
         )
         """
         self.cursor.execute(query)
