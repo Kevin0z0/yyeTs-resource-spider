@@ -1,0 +1,3 @@
+PyMySQL
+pyquery
+requests
