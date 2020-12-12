@@ -7,7 +7,8 @@
 安装requirements
 
 ```bash
-pip install -r requirements.txt
+pip install -r requirements-mongo.txt #安装mongodb版的模块
+pip install -r requirements-mysql.txt #安装mysql版的模块
 ```
 
 修改settings.json中的数据（当前为默认设置）
